@@ -51,7 +51,7 @@ function render(recipe) {
         <span class='recipe__info-text'>servings</span>
 
         <div class='recipe__info-buttons'>
-          <button class='btn--tiny btn--increase-servings'>
+          <button class='btn--tiny btn--decrease-servings'>
             <svg>
               <use href='${icons}#icon-minus-circle'></use>
             </svg>
@@ -145,4 +145,19 @@ function addHandlerRender(listener) {
   window.addEventListener('hashchange', listener);
 }
 
-export { render, renderError, renderSpinner, renderNoRecipe, addHandlerRender };
+/**
+ * Add the given listener to the update servings event
+ * @param {function(-1|1):void} listener
+ */
+function addHandlerUpdateServings(listener) {
+  parentElement.addEventListener('click', function(evt) {
+    const btnClicked = evt.target.closest('.recipe__info-buttons .btn--tiny');
+    if (!btnClicked) {
+      return;
+    }
+    const direction = btnClicked.classList.contains('btn--increase-servings') ? 1 : -1;
+    listener(direction);
+  });
+}
+
+export { render, renderError, renderSpinner, renderNoRecipe, addHandlerRender, addHandlerUpdateServings };

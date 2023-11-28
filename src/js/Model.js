@@ -9,7 +9,7 @@ import { PAGINATION_MAX_BY_PAGE } from './config';
  * pagination: {page: number, nbPages: number}
  * }}
  */
-const state = {
+export const state = {
   recipe: undefined,
   search: {
     query: '',
@@ -26,7 +26,7 @@ const state = {
  * @param id
  * @return {Promise<void>}
  */
-async function loadRecipe(id) {
+export async function loadRecipe(id) {
   if (!id) {
     return;
   }
@@ -39,7 +39,7 @@ async function loadRecipe(id) {
  * @param query
  * @return {Promise<void>}
  */
-async function searchRecipes(query) {
+export async function searchRecipes(query) {
   state.search.query = query;
   state.search.result = !query ? [] : await ForkifyApi.search(query);
   state.pagination.page = 1;
@@ -48,9 +48,9 @@ async function searchRecipes(query) {
 
 /**
  * Change the page of pagination
- * @param {number} direction
+ * @param {-1|1} direction
  */
-function updatePaginationPage(direction) {
+export function updatePaginationPage(direction) {
   state.pagination.page += direction;
   if (state.pagination.page < 1) {
     state.pagination.page = 1;
@@ -63,9 +63,27 @@ function updatePaginationPage(direction) {
  * The recipes for the current pagination
  * @return {LiteRecipe[]}
  */
-function getPaginatedRecipes() {
+export function getPaginatedRecipes() {
   const endAt = state.pagination.page * PAGINATION_MAX_BY_PAGE;
   return state.search.result.slice(endAt - PAGINATION_MAX_BY_PAGE, endAt);
 }
 
-export { state, loadRecipe, searchRecipes, updatePaginationPage, getPaginatedRecipes };
+/**
+ * Update the servings number +/- 1
+ * @param {-1|1} direction
+ */
+export function updateServings(direction) {
+  if (!state.recipe) {
+    return;
+  }
+  const newServing = state.recipe.servings + direction;
+  if (newServing === 0) {
+    return;
+  }
+  const ratio = newServing / state.recipe.servings;
+  state.recipe.servings = newServing;
+  // Calculate the ingredients
+  state.recipe.ingredients
+    .filter((ingredient) => !!ingredient.quantity)
+    .forEach((ingredient) => { ingredient.quantity *= ratio });
+}

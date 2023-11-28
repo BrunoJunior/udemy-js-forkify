@@ -10,7 +10,7 @@ import * as PaginationView from './views/PaginationView';
  * Display the selected recipe
  * @return {Promise<void>}
  */
-async function displayRecipe() {
+async function controlRecipe() {
   try {
     RecipeView.renderSpinner();
     await Model.loadRecipe(window.location.hash?.slice(1));
@@ -36,7 +36,7 @@ function updateRecipesList() {
  * Display the list of recipes
  * @return {Promise<void>}
  */
-async function displayRecipesList() {
+async function controlRecipesList() {
   try {
     RecipesListView.renderSpinner();
     await Model.searchRecipes(SearchView.getValue());
@@ -50,11 +50,24 @@ async function displayRecipesList() {
  * The pagination was updated
  * @param {number} direction
  */
-function updatePagination(direction) {
+function controlPagination(direction) {
   Model.updatePaginationPage(direction);
   updateRecipesList();
 }
 
-RecipeView.addHandlerRender(displayRecipe);
-SearchView.addHandleSearch(displayRecipesList);
-PaginationView.addHandleUpdatePagination(updatePagination);
+/**
+ * Listen to the event and rerender the recipe
+ * @param {-1|1} direction
+ */
+function controlServings(direction) {
+  if (!Model.state.recipe) {
+    return;
+  }
+  Model.updateServings(direction);
+  RecipeView.render(Model.state.recipe);
+}
+
+RecipeView.addHandlerRender(controlRecipe);
+RecipeView.addHandlerUpdateServings(controlServings);
+SearchView.addHandleSearch(controlRecipesList);
+PaginationView.addHandleUpdatePagination(controlPagination);
