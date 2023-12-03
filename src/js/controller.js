@@ -18,6 +18,7 @@ async function controlRecipe() {
       RecipeView.renderNoRecipe();
       return;
     }
+    RecipesListView.update(Model.getPaginatedRecipes(), Model.state.recipe);
     RecipeView.render(Model.state.recipe);
   } catch (e) {
     RecipeView.renderError();
@@ -28,7 +29,7 @@ async function controlRecipe() {
  * Updating the list view depending on the pagination
  */
 function updateRecipesList() {
-  RecipesListView.render(Model.getPaginatedRecipes());
+  RecipesListView.render(Model.getPaginatedRecipes(), Model.state.recipe);
   PaginationView.render(Model.state.pagination.page, Model.state.pagination.nbPages);
 }
 
@@ -64,7 +65,7 @@ function controlServings(direction) {
     return;
   }
   Model.updateServings(direction);
-  RecipeView.render(Model.state.recipe);
+  RecipeView.update(Model.state.recipe);
 }
 
 RecipeView.addHandlerRender(controlRecipe);

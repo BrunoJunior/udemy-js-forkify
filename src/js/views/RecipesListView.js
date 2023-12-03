@@ -4,14 +4,13 @@ const parentElement = document.querySelector('.search-results .results');
 
 /**
  *
- * @param {LiteRecipe} recipe
- * @return {string}
+ * @param {LiteRecipe|undefined} selectedRecipe
+ * @return {(LiteRecipe)=>string}
  */
-function renderLi(recipe) {
-  // FIXME - manage user specific recipe and active line
-  return `<li class='preview'>
-        <a class='preview__link' href='#${recipe.id}'>
-<!--        <a class='preview__link preview__link&#45;&#45;active' href='#${recipe.id}'>-->
+function renderLi(selectedRecipe) {
+  // FIXME - manage user specific recipe
+  return (recipe) => `<li class='preview'>
+        <a class='preview__link ${recipe.id === selectedRecipe?.id ? "preview__link--active" : ""}' href='#${recipe.id}'>
           <figure class='preview__fig'>
             <img src='${recipe.image_url}' alt='${recipe.title}' />
           </figure>
@@ -36,8 +35,22 @@ function renderSpinner() {
   View.renderSpinner(parentElement);
 }
 
-function render(recipes) {
-  parentElement.innerHTML = recipes.map(renderLi).join('\n');
+/**
+ * Render the recipes and change the display depending on the selected one
+ * @param {LiteRecipe[]} recipes
+ * @param {LiteRecipe|undefined} selectedRecipe
+ */
+function render(recipes, selectedRecipe = undefined) {
+  parentElement.innerHTML = recipes.map(renderLi(selectedRecipe)).join('\n');
+}
+
+/**
+ * Update the recipes and change the display depending on the selected one
+ * @param {LiteRecipe[]} recipes
+ * @param {LiteRecipe|undefined} selectedRecipe
+ */
+function update(recipes, selectedRecipe = undefined) {
+  View.updateHtml(parentElement, recipes.map(renderLi(selectedRecipe)).join('\n'))
 }
 
 /**
@@ -49,4 +62,4 @@ function renderError(errorMessage = undefined) {
   View.renderError(parentElement, errorMessage || 'No recipes found for your query. Please try again!');
 }
 
-export { render, renderSpinner, renderError };
+export { render, renderSpinner, renderError, update };

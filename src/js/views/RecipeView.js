@@ -23,12 +23,12 @@ function getIngredientHtml(ingredient) {
 }
 
 /**
- * Render a recipe zone
- * @param {Recipe} recipe
+ * Generate the HTML part
+ * @param recipe
  * @return {string}
  */
-function render(recipe) {
-  parentElement.innerHTML = `<figure class='recipe__fig'>
+function generateHtml(recipe) {
+  return `<figure class='recipe__fig'>
       <img src='${recipe.image_url}' alt='${recipe.title}' class='recipe__img' />
       <h1 class='recipe__title'>
         <span>${recipe.title}</span>
@@ -103,6 +103,19 @@ function render(recipe) {
     </div>`;
 }
 
+function update(recipe) {
+  View.updateHtml(parentElement, generateHtml(recipe));
+}
+
+/**
+ * Render a recipe zone
+ * @param {Recipe} recipe
+ * @return {string}
+ */
+function render(recipe) {
+  parentElement.innerHTML = generateHtml(recipe);
+}
+
 /**
  * Render the error div
  * @param {string|undefined} errorMessage
@@ -160,4 +173,4 @@ function addHandlerUpdateServings(listener) {
   });
 }
 
-export { render, renderError, renderSpinner, renderNoRecipe, addHandlerRender, addHandlerUpdateServings };
+export { render, renderError, renderSpinner, renderNoRecipe, addHandlerRender, addHandlerUpdateServings, update };
