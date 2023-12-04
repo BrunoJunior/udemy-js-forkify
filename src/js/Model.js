@@ -18,7 +18,8 @@ export const state = {
   pagination: {
     page: 1,
     nbPages: 1
-  }
+  },
+  bookmarks: new Map()
 };
 
 /**
@@ -31,6 +32,7 @@ export async function loadRecipe(id) {
     return;
   }
   state.recipe = await ForkifyApi.get(id);
+  state.recipe.bookmarked = isBookmarked(state.recipe);
 }
 
 
@@ -86,4 +88,29 @@ export function updateServings(direction) {
   state.recipe.ingredients
     .filter((ingredient) => !!ingredient.quantity)
     .forEach((ingredient) => { ingredient.quantity *= ratio });
+}
+
+/**
+ * Bookmark a recipe
+ * @param {Recipe} recipe
+ */
+export function toggleBookmark(recipe) {
+  const actualBookmarked = isBookmarked(recipe);
+  if (actualBookmarked) {
+    state.bookmarks.delete(recipe.id);
+  } else {
+    state.bookmarks.set(recipe.id, recipe);
+  }
+  if (recipe.id === state.recipe.id) {
+    recipe.bookmarked = !actualBookmarked;
+  }
+}
+
+/**
+ * Is the recipe bookmarked
+ * @param {Recipe} recipe
+ * @return {boolean}
+ */
+export function isBookmarked(recipe) {
+  return state.bookmarks.has(recipe.id);
 }

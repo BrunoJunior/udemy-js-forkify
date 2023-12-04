@@ -68,7 +68,19 @@ function controlServings(direction) {
   RecipeView.update(Model.state.recipe);
 }
 
+/**
+ *
+ */
+function controlBookmark() {
+  if (!Model.state.recipe) {
+    return;
+  }
+  Model.toggleBookmark(Model.state.recipe);
+  RecipeView.update(Model.state.recipe);
+}
+
 RecipeView.addHandlerRender(controlRecipe);
 RecipeView.addHandlerUpdateServings(controlServings);
+RecipeView.addHandlerToggleBookmark(controlBookmark);
 SearchView.addHandleSearch(controlRecipesList);
 PaginationView.addHandleUpdatePagination(controlPagination);

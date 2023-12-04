@@ -22,7 +22,8 @@ const URL = 'https://forkify-api.herokuapp.com/api/v2';
  *   publisher: string,
  *   servings: number,
  *   source_url: string,
- *   title: string
+ *   title: string,
+ *   bookmarked: boolean|undefined,
  * }} Recipe
  */
 

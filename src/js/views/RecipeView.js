@@ -24,7 +24,7 @@ function getIngredientHtml(ingredient) {
 
 /**
  * Generate the HTML part
- * @param recipe
+ * @param {Recipe} recipe
  * @return {string}
  */
 function generateHtml(recipe) {
@@ -69,9 +69,9 @@ function generateHtml(recipe) {
           <use href='${icons}#icon-user'></use>
         </svg>
       </div>
-      <button class='btn--round'>
+      <button class='btn--round btn--bookmark'>
         <svg class=''>
-          <use href='${icons}#icon-bookmark-fill'></use>
+          <use href='${icons}#icon-bookmark${recipe.bookmarked ? "-fill" : ""}'></use>
         </svg>
       </button>
     </div>
@@ -173,4 +173,18 @@ function addHandlerUpdateServings(listener) {
   });
 }
 
-export { render, renderError, renderSpinner, renderNoRecipe, addHandlerRender, addHandlerUpdateServings, update };
+/**
+ * Add the given listener to the toggle bookmark event
+ * @param {function():void} listener
+ */
+function addHandlerToggleBookmark(listener) {
+  parentElement.addEventListener('click', function(evt) {
+    const btnClicked = evt.target.closest('.btn--bookmark');
+    if (!btnClicked) {
+      return;
+    }
+    listener();
+  });
+}
+
+export { render, renderError, renderSpinner, renderNoRecipe, addHandlerRender, addHandlerUpdateServings, update, addHandlerToggleBookmark };
