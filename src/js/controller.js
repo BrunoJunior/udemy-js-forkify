@@ -3,6 +3,7 @@ import * as RecipeView from './views/RecipeView';
 import * as RecipesListView from './views/RecipesListView';
 import * as SearchView from './views/SearchView';
 import * as PaginationView from './views/PaginationView';
+import * as BookmarkListView from './views/BookmarksListView';
 
 ///////////////////////////////////////
 
@@ -19,6 +20,7 @@ async function controlRecipe() {
       return;
     }
     RecipesListView.update(Model.getPaginatedRecipes(), Model.state.recipe);
+    BookmarkListView.update(Model.getBookmarks(), Model.state.recipe);
     RecipeView.render(Model.state.recipe);
   } catch (e) {
     RecipeView.renderError();
@@ -77,6 +79,7 @@ function controlBookmark() {
   }
   Model.toggleBookmark(Model.state.recipe);
   RecipeView.update(Model.state.recipe);
+  BookmarkListView.render(Model.getBookmarks(), Model.state.recipe);
 }
 
 RecipeView.addHandlerRender(controlRecipe);

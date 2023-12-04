@@ -114,3 +114,11 @@ export function toggleBookmark(recipe) {
 export function isBookmarked(recipe) {
   return state.bookmarks.has(recipe.id);
 }
+
+/**
+ *
+ * @return {Recipe[]}
+ */
+export function getBookmarks() {
+  return Array.from(state.bookmarks.values());
+}

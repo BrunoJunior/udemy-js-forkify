@@ -16,14 +16,15 @@ export function renderSpinner(parentElement) {
  * Render the error div
  * @param {Element} parentElement
  * @param {string|undefined} errorMessage
+ * @param {string} icon
  * @return {string}
  */
-export function renderError(parentElement, errorMessage = undefined) {
+export function renderError(parentElement, errorMessage = undefined, icon = 'icon-alert-triangle') {
   const message = errorMessage || 'No recipes found for your query. Please try again!';
   parentElement.innerHTML = `<div class='error'>
         <div>
           <svg>
-            <use href='${icons}#icon-alert-triangle'></use>
+            <use href='${icons}#${icon}'></use>
           </svg>
         </div>
         <p>${message}</p>
