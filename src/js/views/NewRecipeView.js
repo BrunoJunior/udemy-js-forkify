@@ -51,7 +51,7 @@ function formToRecipe() {
  */
 function ingredientStringToIngredient(ingredient) {
   const [quantity, unit, description] = ingredient.split(',');
-  if (!unit || !description) {
+  if (!description) {
     throw new Error(`Please use the correct format "quantity,unit,description"`);
   }
   return { quantity: +quantity || null, unit: unit ?? '', description: description ?? '' };

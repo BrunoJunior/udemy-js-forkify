@@ -33,7 +33,6 @@ export async function loadRecipe(id) {
   }
   state.recipe = await ForkifyApi.get(id);
   state.recipe.bookmarked = isBookmarked(state.recipe);
-  state.recipe.isMine = state.recipe.key === API_KEY;
 }
 
 
@@ -189,6 +188,5 @@ export function addHandlerInitReady(handler) {
  */
 export async function addNewRecipe(recipe) {
   state.recipe = await ForkifyApi.add(recipe);
-  state.recipe.isMine = true;
   bookmark(state.recipe);
 }

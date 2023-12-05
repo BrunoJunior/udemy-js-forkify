@@ -24,7 +24,6 @@ const URL = 'https://forkify-api.herokuapp.com/api/v2';
  *   source_url: string,
  *   title: string,
  *   bookmarked: boolean|undefined,
- *   isMine: boolean|undefined,
  *   key: string|undefined,
  * }} Recipe
  */
@@ -35,7 +34,8 @@ const URL = 'https://forkify-api.herokuapp.com/api/v2';
  *    id: string,
  *    image_url: string,
  *    publisher: string,
- *    title: string
+ *    title: string,
+ *    key: string|undefined,
  * }} LiteRecipe
  */
 
@@ -81,6 +81,7 @@ async function search(value) {
   if (!Array.isArray(checkedResponse?.recipes) || checkedResponse.recipes.length === 0) {
     throw Error("No recipes found! Please try again!")
   }
+  console.dir(checkedResponse.recipes);
   return checkedResponse.recipes;
 }
 

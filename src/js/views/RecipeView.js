@@ -23,6 +23,19 @@ function getIngredientHtml(ingredient) {
 }
 
 /**
+ *
+ * @param {Recipe} recipe
+ * @return string
+ */
+function generateUserGeneratedIcon(recipe) {
+  return `<div class='recipe__user-generated ${!!recipe.key ? "" : "hidden"}'>
+        <svg>
+          <use href='${icons}#icon-user'></use>
+        </svg>
+      </div>`;
+}
+
+/**
  * Generate the HTML part
  * @param {Recipe} recipe
  * @return {string}
@@ -64,11 +77,7 @@ function generateHtml(recipe) {
         </div>
       </div>
 
-      <div class='recipe__user-generated'>
-        <svg>
-          <use href='${icons}#icon-user'></use>
-        </svg>
-      </div>
+      ${generateUserGeneratedIcon(recipe)}
       <button class='btn--round btn--bookmark'>
         <svg class=''>
           <use href='${icons}#icon-bookmark${recipe.bookmarked ? "-fill" : ""}'></use>

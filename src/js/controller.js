@@ -100,6 +100,8 @@ async function controlNewRecipe(recipe) {
   await Model.addNewRecipe(recipe);
   if (Model.state.recipe) {
     RecipeView.render(Model.state.recipe);
+    BookmarkListView.render(Model.getBookmarks(), Model.state.recipe);
+    window.history.pushState(null, '', `#${Model.state.recipe.id}`);
   }
 }
 
