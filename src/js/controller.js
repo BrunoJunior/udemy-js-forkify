@@ -72,24 +72,34 @@ function controlServings(direction) {
 }
 
 /**
- *
+ * Render the bookmark list view
  */
-function controlBookmark() {
+function controlDisplayBookmark() {
+  BookmarkListView.render(Model.getBookmarks(), Model.state.recipe);
+}
+
+/**
+ * Make some changes on bookmark toggle
+ */
+function controlToggleBookmark() {
   if (!Model.state.recipe) {
     return;
   }
   Model.toggleBookmark(Model.state.recipe);
   RecipeView.update(Model.state.recipe);
-  BookmarkListView.render(Model.getBookmarks(), Model.state.recipe);
+  controlDisplayBookmark()
 }
 
+/**
+ * Init function (iife)
+ */
 (function init() {
   RecipeView.addHandlerRender(controlRecipe);
   RecipeView.addHandlerUpdateServings(controlServings);
-  RecipeView.addHandlerToggleBookmark(controlBookmark);
+  RecipeView.addHandlerToggleBookmark(controlToggleBookmark);
   SearchView.addHandleSearch(controlRecipesList);
   PaginationView.addHandleUpdatePagination(controlPagination);
-  Model.addHandlerInitReady(() => BookmarkListView.render(Model.getBookmarks(), Model.state.recipe));
+  Model.addHandlerInitReady(controlDisplayBookmark);
 })();
 
 
