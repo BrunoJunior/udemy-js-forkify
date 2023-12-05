@@ -4,6 +4,7 @@ import * as RecipesListView from './views/RecipesListView';
 import * as SearchView from './views/SearchView';
 import * as PaginationView from './views/PaginationView';
 import * as BookmarkListView from './views/BookmarksListView';
+import * as NewRecipeView from './views/NewRecipeView';
 
 ///////////////////////////////////////
 
@@ -91,6 +92,18 @@ function controlToggleBookmark() {
 }
 
 /**
+ * Manage adding a new recipe
+ * @param {Recipe} recipe
+ * @return {Promise<void>}
+ */
+async function controlNewRecipe(recipe) {
+  await Model.addNewRecipe(recipe);
+  if (Model.state.recipe) {
+    RecipeView.render(Model.state.recipe);
+  }
+}
+
+/**
  * Init function (iife)
  */
 (function init() {
@@ -100,6 +113,7 @@ function controlToggleBookmark() {
   SearchView.addHandleSearch(controlRecipesList);
   PaginationView.addHandleUpdatePagination(controlPagination);
   Model.addHandlerInitReady(controlDisplayBookmark);
+  NewRecipeView.addHandlerUpload(controlNewRecipe);
 })();
 
 

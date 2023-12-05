@@ -16,7 +16,7 @@ const URL = 'https://forkify-api.herokuapp.com/api/v2';
  * A recipe.
  * @typedef {{
  *   cooking_time: number,
- *   id: string,
+ *   id: string|undefined,
  *   image_url: string,
  *   ingredients: Ingredient[],
  *   publisher: string,
@@ -24,6 +24,8 @@ const URL = 'https://forkify-api.herokuapp.com/api/v2';
  *   source_url: string,
  *   title: string,
  *   bookmarked: boolean|undefined,
+ *   isMine: boolean|undefined,
+ *   key: string|undefined,
  * }} Recipe
  */
 
@@ -100,7 +102,7 @@ async function get(recipeId) {
 /**
  * Add a new personal recipe
  * @param {Recipe} recipe
- * @return {Promise<void>}
+ * @return {Promise<Recipe>}
  */
 async function add(recipe) {
   const response = await HPromise.timeout(fetch(
@@ -109,7 +111,7 @@ async function add(recipe) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(recipe)
     }), Config.DEFAULT_API_TIMEOUT);
-  return checkResponse(response, 'Error during recipe creation!');
+  return (await checkResponse(response, 'Error during recipe creation!')).recipe;
 }
 
 /**

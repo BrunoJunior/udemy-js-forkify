@@ -1,6 +1,5 @@
 import * as ForkifyApi from './helpers/ForkifyApi';
-import { PAGINATION_MAX_BY_PAGE, LOCALSTORAGE_BOOKMARK_KEY } from './config';
-import * as BookmarkListView from './views/BookmarksListView';
+import { PAGINATION_MAX_BY_PAGE, LOCALSTORAGE_BOOKMARK_KEY, API_KEY } from './config';
 
 /**
  *
@@ -34,6 +33,7 @@ export async function loadRecipe(id) {
   }
   state.recipe = await ForkifyApi.get(id);
   state.recipe.bookmarked = isBookmarked(state.recipe);
+  state.recipe.isMine = state.recipe.key === API_KEY;
 }
 
 
@@ -180,4 +180,15 @@ async function initModel() {
  */
 export function addHandlerInitReady(handler) {
   initModel().then(handler).catch(console.error);
+}
+
+/**
+ * Adding a new recipe
+ * @param {Recipe} recipe
+ * @return {Promise<void>}
+ */
+export async function addNewRecipe(recipe) {
+  state.recipe = await ForkifyApi.add(recipe);
+  state.recipe.isMine = true;
+  bookmark(state.recipe);
 }
