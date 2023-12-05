@@ -23,6 +23,7 @@ async function controlRecipe() {
     BookmarkListView.update(Model.getBookmarks(), Model.state.recipe);
     RecipeView.render(Model.state.recipe);
   } catch (e) {
+    console.error(e);
     RecipeView.renderError();
   }
 }
@@ -82,8 +83,13 @@ function controlBookmark() {
   BookmarkListView.render(Model.getBookmarks(), Model.state.recipe);
 }
 
-RecipeView.addHandlerRender(controlRecipe);
-RecipeView.addHandlerUpdateServings(controlServings);
-RecipeView.addHandlerToggleBookmark(controlBookmark);
-SearchView.addHandleSearch(controlRecipesList);
-PaginationView.addHandleUpdatePagination(controlPagination);
+(function init() {
+  RecipeView.addHandlerRender(controlRecipe);
+  RecipeView.addHandlerUpdateServings(controlServings);
+  RecipeView.addHandlerToggleBookmark(controlBookmark);
+  SearchView.addHandleSearch(controlRecipesList);
+  PaginationView.addHandleUpdatePagination(controlPagination);
+  Model.addHandlerInitReady(() => BookmarkListView.render(Model.getBookmarks(), Model.state.recipe));
+})();
+
+

@@ -1,5 +1,6 @@
 import * as ForkifyApi from './helpers/ForkifyApi';
-import { PAGINATION_MAX_BY_PAGE } from './config';
+import { PAGINATION_MAX_BY_PAGE, LOCALSTORAGE_BOOKMARK_KEY } from './config';
+import * as BookmarkListView from './views/BookmarksListView';
 
 /**
  *
@@ -91,18 +92,48 @@ export function updateServings(direction) {
 }
 
 /**
+ * Mark a recipe as bookmarked
+ * @param recipe
+ * @param isStorageToUpdate
+ */
+function bookmark(recipe, isStorageToUpdate = true) {
+  state.bookmarks.set(recipe.id, recipe);
+  if (isStorageToUpdate) {
+    updateStorage();
+  }
+  if (recipe.id === state.recipe?.id) {
+    state.recipe.bookmarked = true;
+  }
+}
+
+/**
+ * Remove a recipe from the bookmarked list
+ * @param {Recipe} recipe
+ */
+function unbookmark(recipe) {
+  state.bookmarks.delete(recipe.id);
+  updateStorage();
+  if (recipe.id === state.recipe?.id) {
+    state.recipe.bookmarked = false;
+  }
+}
+
+/**
+ * Updating the local storage
+ */
+function updateStorage() {
+  localStorage.setItem(LOCALSTORAGE_BOOKMARK_KEY, JSON.stringify(Array.from(state.bookmarks.keys())));
+}
+
+/**
  * Bookmark a recipe
  * @param {Recipe} recipe
  */
 export function toggleBookmark(recipe) {
-  const actualBookmarked = isBookmarked(recipe);
-  if (actualBookmarked) {
-    state.bookmarks.delete(recipe.id);
+  if (isBookmarked(recipe)) {
+    unbookmark(recipe)
   } else {
-    state.bookmarks.set(recipe.id, recipe);
-  }
-  if (recipe.id === state.recipe.id) {
-    recipe.bookmarked = !actualBookmarked;
+    bookmark(recipe);
   }
 }
 
@@ -121,4 +152,32 @@ export function isBookmarked(recipe) {
  */
 export function getBookmarks() {
   return Array.from(state.bookmarks.values());
+}
+
+/**
+ * Getting the bookmarks from the local storage
+ * @return {Promise<void>}
+ */
+async function initModel() {
+  const strBookmarks = localStorage.getItem(LOCALSTORAGE_BOOKMARK_KEY) || '[]';
+  /**
+   * List of ids
+   * @type {number[]}
+   */
+  const bookmarked = JSON.parse(strBookmarks);
+  if (!Array.isArray(bookmarked)) {
+    return;
+  }
+  (await Promise.allSettled(bookmarked.map(ForkifyApi.get)))
+    .filter(result => result.status === 'fulfilled')
+    .map(result => result.value)
+    .forEach(recipe => bookmark(recipe, false));
+}
+
+/**
+ * Listen the ready model event
+ * @param handler
+ */
+export function addHandlerInitReady(handler) {
+  initModel().then(handler).catch(console.error);
 }
